@@ -1,8 +1,16 @@
-import type { Pokemon, PokemonListResponse, PokemonSpecies, EvolutionChain } from '../types/pokemon';
+import type {
+  Pokemon,
+  PokemonListResponse,
+  PokemonSpecies,
+  EvolutionChain,
+} from '../types/pokemon';
 
 const BASE_URL = 'https://pokeapi.co/api/v2';
 
-export const fetchPokemonList = async (limit: number = 20, offset: number = 0): Promise<PokemonListResponse> => {
+export const fetchPokemonList = async (
+  limit: number = 20,
+  offset: number = 0
+): Promise<PokemonListResponse> => {
   const response = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
   if (!response.ok) throw new Error('Erreur API');
   return (await response.json()) as PokemonListResponse;

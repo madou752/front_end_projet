@@ -7,7 +7,7 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 
 app.innerHTML = `
   <header>
-    <h1><a href="/" style="color: inherit; text-decoration: none;">Pokédex</a></h1>
+    <h1><a href="/" style="color: inherit; text-decoration: none;">Pokédoums</a></h1>
     <div id="stats-banner">Chargement...</div>
   </header>
   <main>
@@ -28,18 +28,18 @@ const loadPokemons = async () => {
   try {
     statsBanner.textContent = 'Chargement...';
     const list = await fetchPokemonList(LIMIT, currentOffset);
-    
+
     const detailsPromises = list.results.map((p) => fetchPokemonDetails(p.url));
     const pokemons = await Promise.all(detailsPromises);
-    
+
     pokemons.forEach((p) => loadedPokemons.set(p.id, p));
-    
+
     const cardsHtml = pokemons.map((p) => createPokemonCard(p)).join('');
     grid.innerHTML += cardsHtml;
-    
+
     statsBanner.textContent = `${loadedPokemons.size} Pokémon affichés`;
     loadMoreBtn.style.display = 'block';
-  } catch (error) {
+  } catch {
     statsBanner.textContent = 'Erreur lors du chargement.';
   }
 };

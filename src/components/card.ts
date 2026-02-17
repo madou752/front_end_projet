@@ -8,9 +8,7 @@ export const createPokemonCard = (pokemon: Pokemon): string => {
   const color1 = typeColors[type1] || '#777';
   const color2 = type2 ? typeColors[type2] : color1;
 
-  const background = type2 
-    ? `linear-gradient(135deg, ${color1} 50%, ${color2} 50%)`
-    : color1;
+  const background = type2 ? `linear-gradient(135deg, ${color1} 50%, ${color2} 50%)` : color1;
 
   return `
     <div class="pokemon-card" style="background: ${background};" data-id="${pokemon.id}">

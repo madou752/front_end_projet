@@ -50,7 +50,7 @@ body {
   width: 120px;
   height: 120px;
   object-fit: contain;
-  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .card-types {
@@ -70,7 +70,7 @@ body {
 header {
   padding: 16px;
   background: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -32,7 +32,7 @@ Pokédoums est une application web moderne construite avec **TypeScript** et **V
 
 1. Cloner le dépôt :
    ```bash
-   git clone [https://github.com/madou752/front_end_projet.git](https://github.com/madou752/front_end_projet.git)
+   git clone https://github.com/madou752/front_end_projet.git
    ```
 2. Installer les dépendances :
     ```bash

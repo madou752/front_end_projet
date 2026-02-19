@@ -2,6 +2,15 @@ import { fetchPokemonDetails, fetchSpecies } from './services/api';
 import { typeColors } from './utils/colors';
 import './pokemon.css';
 
+const getFavorites = (): number[] => {
+  const saved = localStorage.getItem('pokemon_favorites');
+  return saved ? JSON.parse(saved) : [];
+};
+
+const saveFavorites = (favorites: number[]) => {
+  localStorage.setItem('pokemon_favorites', JSON.stringify(favorites));
+};
+
 const app = document.querySelector<HTMLDivElement>('#pokemon-app')!;
 const urlParams = new URLSearchParams(window.location.search);
 const idParam = urlParams.get('id');
@@ -22,6 +31,8 @@ const init = async () => {
     app.innerHTML = '<div class="loader">Chargement...</div>';
 
     const id = parseInt(idParam, 10);
+    let favoriteIds = getFavorites();
+    let isFavorite = favoriteIds.includes(id);
 
     const [pokemon, species] = await Promise.all([
       fetchPokemonDetails(`${import.meta.env.VITE_BASE_URL}/pokemon/${id}`),
@@ -60,6 +71,8 @@ const init = async () => {
     const prevId = id > 1 ? id - 1 : null;
     const nextId = id + 1;
 
+    const renderHeart = () => isFavorite ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
+
     app.innerHTML = `
       <header>
         <h1><a href="/">Pokédoums</a></h1>
@@ -76,12 +89,14 @@ const init = async () => {
           </div>
 
           <div class="detail-header">
-            <h1>${pokemon.name} <span>#${pokemon.id.toString().padStart(3, '0')}</span></h1>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 10px;">
+              <h1 style="margin: 0;">${pokemon.name} <span>#${pokemon.id.toString().padStart(3, '0')}</span></h1>
+              <button id="detail-fav-btn" class="fav-btn" style="color: #ff4a4a; filter: none;">${renderHeart()}</button>
+            </div>
             <img src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${pokemon.name}" class="main-img">
             <div class="types-container">
               ${typesHtml}
             </div>
-
           </div>
           <p class="description">${cleanDesc}</p>
           <div class="info-grid">
@@ -93,6 +108,21 @@ const init = async () => {
         </div>
       </main>
     `;
+
+    const favBtn = document.getElementById('detail-fav-btn');
+    if (favBtn) {
+      favBtn.addEventListener('click', () => {
+        isFavorite = !isFavorite;
+        if (isFavorite) {
+          favoriteIds.push(id);
+        } else {
+          favoriteIds = favoriteIds.filter(favId => favId !== id);
+        }
+        saveFavorites(favoriteIds);
+        favBtn.innerHTML = renderHeart();
+      });
+    }
+
   } catch (error) {
     console.error("Erreur API :", error);
     app.innerHTML = '<h2>Erreur lors du chargement.</h2><a href="/">Retour</a>';

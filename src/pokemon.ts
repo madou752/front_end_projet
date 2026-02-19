@@ -24,12 +24,19 @@ const init = async () => {
     const id = parseInt(idParam, 10);
 
     const [pokemon, species] = await Promise.all([
-      fetchPokemonDetails(`${import.meta.env.BASE_URL}/pokemon/${id}`),
-      fetchSpecies(`${import.meta.env.BASE_URL}/pokemon-species/${id}`),
+      fetchPokemonDetails(`${import.meta.env.VITE_BASE_URL}/pokemon/${id}`),
+      fetchSpecies(`${import.meta.env.VITE_BASE_URL}/pokemon-species/${id}`),
     ]);
 
     const type1 = pokemon.types[0].type.name;
     const color = typeColors[type1] || '#777';
+
+    const typesHtml = pokemon.types
+      .map((t: any) => {
+        const typeColor = typeColors[t.type.name] || '#777';
+        return `<span class="type-badge" style="background-color: ${typeColor};">${t.type.name}</span>`;
+      })
+      .join('');
 
     const statsHtml = pokemon.stats
       .map(
@@ -44,33 +51,39 @@ const init = async () => {
       .join('');
 
     const desc =
-      species.flavor_text_entries.find((f) => f.language.name === 'fr')?.flavor_text ||
-      species.flavor_text_entries.find((f) => f.language.name === 'en')?.flavor_text ||
+      species.flavor_text_entries.find((f: any) => f.language.name === 'fr')?.flavor_text ||
+      species.flavor_text_entries.find((f: any) => f.language.name === 'en')?.flavor_text ||
       'Aucune description.';
+
+    const cleanDesc = desc.replace(/[\n\f\r]/g, ' ');
 
     const prevId = id > 1 ? id - 1 : null;
     const nextId = id + 1;
 
     app.innerHTML = `
       <header>
-        <h1><a href="/">Pokédex</a></h1>
+        <h1><a href="/">Pokédoums</a></h1>
       </header>
       <main class="pokemon-container">
         <nav class="breadcrumb">
           <a href="/">Accueil</a> &gt; <span>${pokemon.name}</span>
         </nav>
         
-        <div class="nav-buttons">
-          ${prevId ? `<a href="/pokemon.html?id=${prevId}" class="nav-arrow">&laquo; N°${prevId.toString().padStart(3, '0')}</a>` : '<div></div>'}
-          ${nextId ? `<a href="/pokemon.html?id=${nextId}" class="nav-arrow">N°${nextId.toString().padStart(3, '0')} &raquo;</a>` : '<div></div>'}
-        </div>
-
         <div class="detail-card" style="border-top: 10px solid ${color};">
+          <div class="nav-buttons">
+            ${prevId ? `<a href="/pokemon.html?id=${prevId}" class="nav-arrow">&laquo; N°${prevId.toString().padStart(3, '0')}</a>` : '<div></div>'}
+            ${nextId ? `<a href="/pokemon.html?id=${nextId}" class="nav-arrow">N°${nextId.toString().padStart(3, '0')} &raquo;</a>` : '<div></div>'}
+          </div>
+
           <div class="detail-header">
             <h1>${pokemon.name} <span>#${pokemon.id.toString().padStart(3, '0')}</span></h1>
             <img src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${pokemon.name}" class="main-img">
+            <div class="types-container">
+              ${typesHtml}
+            </div>
+
           </div>
-          <p class="description">${desc.replace(/\\f|\\n|\f|\n/g, ' ')}</p>
+          <p class="description">${cleanDesc}</p>
           <div class="info-grid">
             <div class="info-box"><strong>Poids</strong><br>${pokemon.weight / 10} kg</div>
             <div class="info-box"><strong>Taille</strong><br>${pokemon.height / 10} m</div>
@@ -80,7 +93,8 @@ const init = async () => {
         </div>
       </main>
     `;
-  } catch {
+  } catch (error) {
+    console.error("Erreur API :", error);
     app.innerHTML = '<h2>Erreur lors du chargement.</h2><a href="/">Retour</a>';
   }
 };

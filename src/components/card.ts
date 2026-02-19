@@ -10,13 +10,14 @@ export const createPokemonCard = (pokemon: Pokemon, isFavorite: boolean = false)
 
   const background = type2 ? `linear-gradient(135deg, ${color1} 50%, ${color2} 50%)` : color1;
   const heartClass = isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+  const favLabel = isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
 
   return `
-    <div class="pokemon-card" style="background: ${background};" data-id="${pokemon.id}">
+    <div class="pokemon-card" style="background: ${background};" data-id="${pokemon.id}" tabindex="0" role="button" aria-label="Voir les détails de ${pokemon.name}">
       <div class="card-header">
-      <span class="pokemon-id">#${pokemon.id.toString().padStart(3, '0')}</span>
-      <h2 class="pokemon-name">${pokemon.name}</h2>
-        <button class="fav-btn"><i class="${heartClass}"></i></button>
+        <span class="pokemon-id">#${pokemon.id.toString().padStart(3, '0')}</span>
+        <h2 class="pokemon-name">${pokemon.name}</h2>
+        <button class="fav-btn" aria-label="${favLabel}" tabindex="0"><i class="${heartClass}"></i></button>
       </div>
       <div class="card-image-container">
         <img src="${pokemon.sprites.other['official-artwork'].front_default}" alt="${pokemon.name}" class="pokemon-image" loading="lazy" />

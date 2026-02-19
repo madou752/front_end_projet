@@ -71,11 +71,20 @@ const init = async () => {
     const prevId = id > 1 ? id - 1 : null;
     const nextId = id + 1;
 
-    const renderHeart = () => isFavorite ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
+    const renderHeart = () =>
+      isFavorite ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
+
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const isDark = currentTheme === 'dark';
+    if (isDark) document.body.classList.add('dark-mode');
+    const themeIcon = isDark
+      ? '<i class="fa-solid fa-sun"></i>'
+      : '<i class="fa-solid fa-moon"></i>';
 
     app.innerHTML = `
-      <header>
+      <header style="display: flex; justify-content: space-between; align-items: center;">
         <h1><a href="/">Pokédoums</a></h1>
+        <button id="theme-toggle" class="theme-btn">${themeIcon}</button>
       </header>
       <main class="pokemon-container">
         <nav class="breadcrumb">
@@ -116,15 +125,26 @@ const init = async () => {
         if (isFavorite) {
           favoriteIds.push(id);
         } else {
-          favoriteIds = favoriteIds.filter(favId => favId !== id);
+          favoriteIds = favoriteIds.filter((favId) => favId !== id);
         }
         saveFavorites(favoriteIds);
         favBtn.innerHTML = renderHeart();
       });
     }
 
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const darkActive = document.body.classList.contains('dark-mode');
+        localStorage.setItem('theme', darkActive ? 'dark' : 'light');
+        themeToggleBtn.innerHTML = darkActive
+          ? '<i class="fa-solid fa-sun"></i>'
+          : '<i class="fa-solid fa-moon"></i>';
+      });
+    }
   } catch (error) {
-    console.error("Erreur API :", error);
+    console.error('Erreur API :', error);
     app.innerHTML = '<h2>Erreur lors du chargement.</h2><a href="/">Retour</a>';
   }
 };

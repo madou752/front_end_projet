@@ -1,5 +1,6 @@
 import { fetchPokemonDetails, fetchSpecies } from './services/api';
 import { typeColors } from './utils/colors';
+import type { PokemonTypeSlot, FlavorText } from './types/pokemon';
 import './pokemon.css';
 
 const getFavorites = (): number[] => {
@@ -43,7 +44,7 @@ const init = async () => {
     const color = typeColors[type1] || '#777';
 
     const typesHtml = pokemon.types
-      .map((t: any) => {
+      .map((t: PokemonTypeSlot) => {
         const typeColor = typeColors[t.type.name] || '#777';
         return `<span class="type-badge" style="background-color: ${typeColor};">${t.type.name}</span>`;
       })
@@ -62,8 +63,8 @@ const init = async () => {
       .join('');
 
     const desc =
-      species.flavor_text_entries.find((f: any) => f.language.name === 'fr')?.flavor_text ||
-      species.flavor_text_entries.find((f: any) => f.language.name === 'en')?.flavor_text ||
+      species.flavor_text_entries.find((f: FlavorText) => f.language.name === 'fr')?.flavor_text ||
+      species.flavor_text_entries.find((f: FlavorText) => f.language.name === 'en')?.flavor_text ||
       'Aucune description.';
 
     const cleanDesc = desc.replace(/[\n\f\r]/g, ' ');

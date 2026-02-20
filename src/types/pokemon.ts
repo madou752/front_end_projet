@@ -66,3 +66,28 @@ export interface EvolutionNode {
   };
   evolves_to: EvolutionNode[];
 }
+
+export interface PokemonStat {
+  base_stat: number;
+  stat: {
+    name: string;
+  };
+}
+
+export interface PokemonTypeSlot {
+  type: {
+    name: string;
+  };
+}
+
+export interface PokemonListItem {
+  name: string;
+  url: string;
+}
+
+export interface FlavorText {
+  flavor_text: string;
+  language: {
+    name: string;
+  };
+}

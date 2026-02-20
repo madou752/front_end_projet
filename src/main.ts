@@ -1,6 +1,6 @@
 import { fetchPokemonList, fetchPokemonDetails } from './services/api';
 import { createPokemonCard } from './components/card';
-import type { Pokemon } from './types/pokemon';
+import type { Pokemon, PokemonListItem } from './types/pokemon';
 import './style.css';
 
 const getFavorites = (): number[] => {
@@ -152,7 +152,7 @@ const loadPokemons = async () => {
     renderSkeletons(LIMIT);
 
     const list = await fetchPokemonList(LIMIT, currentOffset);
-    const detailsPromises = list.results.map((p: any) => fetchPokemonDetails(p.url));
+    const detailsPromises = list.results.map((p: PokemonListItem) => fetchPokemonDetails(p.url));
     const pokemons = await Promise.all(detailsPromises);
 
     pokemons.forEach((p) => loadedPokemons.set(p.id, p));

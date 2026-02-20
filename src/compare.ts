@@ -1,5 +1,6 @@
 import { fetchPokemonDetails } from './services/api';
 import { typeColors } from './utils/colors';
+import type { Pokemon, PokemonStat } from './types/pokemon';
 import './compare.css';
 
 const getFavorites = (): number[] => {
@@ -40,7 +41,7 @@ const init = async () => {
       fetchPokemonDetails(`${import.meta.env.VITE_BASE_URL}/pokemon/${id2}`),
     ]);
 
-    const calculateAverageStats = (stats: any[]) => {
+    const calculateAverageStats = (stats: PokemonStat[]) => {
       const total = stats.reduce((sum, s) => sum + s.base_stat, 0);
       return total / stats.length;
     };
@@ -52,7 +53,7 @@ const init = async () => {
     if (avg1 > avg2) comparisonSymbol = '>';
     if (avg1 < avg2) comparisonSymbol = '<';
 
-    const generatePokemonCardHTML = (pokemon: any, avg: number) => {
+    const generatePokemonCardHTML = (pokemon: Pokemon, avg: number) => {
       const type1 = pokemon.types[0].type.name;
       const color = typeColors[type1] || '#777';
       const isFav = favoriteIds.includes(pokemon.id);
@@ -61,7 +62,7 @@ const init = async () => {
         : '<i class="fa-regular fa-heart"></i>';
 
       const statsHtml = pokemon.stats
-        .map((s: any, index: number) => {
+        .map((s: PokemonStat, index: number) => {
           const otherStat =
             pokemon === pokemon1
               ? pokemon2.stats[index].base_stat
